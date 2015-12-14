@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<module suppressWarnings="false">
+  <User f="nodata">
+    <User>
+      <Select_User t="list" f="user" l="Control"/>
+    </User>
+  </User>
+  <Control f="nodata">
+    <Control>
+      <New_Ent t="button" l="Ent"/>
+    </Control>
+    <search/>
+  </Control>
+  <Ent>
+    <Tab>
+      <ID f="id"/>
+      <Device_List f="nodata" t="dropdown"/>
+      <Refresh_List t="button"/>
+    </Tab>
+  </Ent>
+  <logic>
+  <![CDATA[
+  String capturingDevice = null;
+
+  addOnEvent("Ent/Tab/Device_List",  "click", "onClickDeviceList()");
+  addOnEvent("Ent/Tab/Device_List",  "show",  "refreshList()");
+  addOnEvent("Ent/Tab/Refresh_List", "click", "refreshList()");
+
+  onClickDeviceList() {
+    String s = getFieldValue("Ent/Tab/Device_List");
+    showToast(s);
+  }
+
+  refreshList() {
+    l  = getHardwareDevices();
+    pl = listToPairList(l);
+    populateDropDown("Ent/Tab/Device_List", pl);
+  }
+
+  listToPairList(List l) {
+    List pl = new ArrayList();
+    for (String s : l) {
+      pl.add(new NameValuePair(s, s));
+    }
+    return pl;
+  }
+
+
+  addOnEvent("Ent/Tab", "show", "onBluetoothStartAuto()");
+  
+  messageBuffer = new ArrayList();
+  messageBufferSize = 5;
+  addMessage(message) {
+    messageBuffer.add(message);
+    if (messageBuffer.size() > messageBufferSize) {
+      messageBuffer.remove(0);
+    }
+    value = "";
+    for (i = 0; i < messageBuffer.size(); i++) {
+      if (!value.isEmpty()) {
+        value += "\n";
+      }
+      value += messageBuffer.get(i);
+    }
+    setFieldValue("Ent/Tab/ID", value);
+  }
+  
+  onBluetoothStartAuto() {
+    createBluetoothConnection("onBluetoothInput()", 1);
+  }
+  
+  onBluetoothInput() {
+    message = getBluetoothMessage();
+    addMessage(message);
+  }
+  ]]>
+  </logic>
+</module>
