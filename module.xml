@@ -1,40 +1,57 @@
 <?xml version="1.0" ?>
 <module suppressWarnings="false">
+
   <User f="nodata">
     <User>
-      <Select_User t="list" f="user" l="Control"/>
+      <Select_User t="list" f="user" l="Main"/>
     </User>
   </User>
-  <Control f="nodata">
-    <Control>
-      <New_Ent t="button" l="Ent"/>
-    </Control>
+
+  <Main f="nodata">
+    <Main>
+      <Project/>
+      <Author/>
+      <autonum/>
+      <Take_New_Sample   t="button" l="Sample"/>
+      <Load_From_Barcode t="button"/>
+    </Main>
     <search/>
-  </Control>
-  <Ent>
+  </Main>
+
+  <Sample>
     <Tab>
-      <ID f="id"/>
+      <Project f="readonly"/>
+      <Author/>
+      <timestamp/>
+      <Artefact_ID f="id notnull"/>
+      <Artefact_Type/>
+      <Artefact_Description/>
+      <Artefact_Barcode/>
+      <Picture t="camera"/>
+      <Number_Of_Joints b="decimal"/>
+      <Total_Weight b="decimal"/>
+      <Take_Weight t="button"/>
       <Device_List f="nodata" t="dropdown"/>
       <Refresh_List t="button"/>
     </Tab>
-  </Ent>
+  </Sample>
   <logic>
   <![CDATA[
   String capturingDevice = null;
 
-  addOnEvent("Ent/Tab/Device_List",  "click", "onClickDeviceList()");
-  addOnEvent("Ent/Tab/Device_List",  "show",  "refreshList()");
-  addOnEvent("Ent/Tab/Refresh_List", "click", "refreshList()");
+  addOnEvent("Sample/Tab/Device_List",  "click", "onClickDeviceList()");
+  addOnEvent("Sample/Tab/Device_List",  "show",  "refreshList()");
+  addOnEvent("Sample/Tab/Refresh_List", "click", "refreshList()");
 
   onClickDeviceList() {
-    String s = getFieldValue("Ent/Tab/Device_List");
+    String s = getFieldValue("Sample/Tab/Device_List");
     showToast(s);
   }
 
   refreshList() {
     l  = getHardwareDevices();
     pl = listToPairList(l);
-    populateDropDown("Ent/Tab/Device_List", pl);
+    populateDropDown("Sample/Tab/Device_List", pl);
   }
 
   listToPairList(List l) {
@@ -46,7 +63,7 @@
   }
 
 
-  addOnEvent("Ent/Tab", "show", "onBluetoothStartAuto()");
+  addOnEvent("Sample/Tab", "show", "onBluetoothStartAuto()");
   
   messageBuffer = new ArrayList();
   messageBufferSize = 5;
@@ -62,7 +79,7 @@
       }
       value += messageBuffer.get(i);
     }
-    setFieldValue("Ent/Tab/ID", value);
+    setFieldValue("Sample/Tab/ID", value);
   }
   
   onBluetoothStartAuto() {
