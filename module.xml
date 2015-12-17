@@ -13,82 +13,186 @@
       <Author/>
       <autonum/>
       <Take_New_Sample   t="button" l="Sample"/>
-      <Load_From_Barcode t="button"/>
+      <!--<Load_From_Barcode t="button"/>-->
     </Main>
     <search/>
   </Main>
 
   <Sample>
-    <Tab>
+    <Sample>
       <Project f="readonly"/>
       <Author/>
-      <timestamp/>
-      <Artefact_ID f="id notnull"/>
-      <Artefact_Type/>
+      <Timestamp/>
+      <Artefact_ID f="id notnull autonum"/>
+      <Artefact_Type t="dropdown">
+        <desc>Broad Artefact Class for each Artefact (eg Chipped stone, Clay object, Building Material).</desc>
+        <opts>
+          <opt>No Observation
+            <desc>data not collected</desc>
+          </opt>
+          <opt>Chipped Stone
+            <opt>Blade</opt>
+            <opt>Core</opt>
+            <opt>Cache</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Ground Stone
+            <opt>Bead</opt>
+            <opt>Grinder</opt>
+            <opt>Pestle</opt>
+            <opt>Shaft Straightener</opt>
+            <opt>Pendant</opt>
+            <opt>Incised Stone</opt>
+            <opt>Polisher</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Bone
+            <opt>Point</opt>
+            <opt>Bead</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Shell
+            <opt>Bead</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Plant
+            <opt>Charcoal</opt>
+            <opt>Hackberry</opt>
+            <opt>Charred Seed</opt>
+            <opt>Siliceous Material</opt>
+            <opt>Phytolith</opt>
+            <opt>Impression Cast</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Ochre</opt>
+          <opt>Clay Object
+            <opt>Figurine</opt>
+            <opt>Geometric Object</opt>
+            <opt>Token</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Ceramic
+            <opt>Coarse</opt>
+            <opt>Fine</opt>
+            <opt>Terracotta</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Glass
+            <opt>Black</opt>
+            <opt>Colourless</opt>
+            <opt>Coloured</opt>
+          </opt>
+          <opt>Metal
+            <opt>Ferrous</opt>
+            <opt>Copper-alloy</opt>
+            <opt>Other</opt>
+          </opt>
+          <opt>Building Materials</opt>
+          <opt>Miscellaneous
+            <desc>Add detail in the Annotation field</desc>
+          </opt>
+        </opts>
+      </Artefact_Type>
       <Artefact_Description/>
       <Artefact_Barcode/>
       <Picture t="camera"/>
       <Number_Of_Joints b="decimal"/>
       <Total_Weight b="decimal"/>
       <Take_Weight t="button"/>
-      <Device_List f="nodata" t="dropdown"/>
-      <Refresh_List t="button"/>
-    </Tab>
+    </Sample>
   </Sample>
   <logic>
   <![CDATA[
+/******************************* FIELD COPYING ********************************/
+  addOnEvent("Main/Main/Take_New_Sample", "click", "copyAuthor()");
+  addOnEvent("Main/Main/Take_New_Sample", "click", "copyProject()");
+
+  copyFieldVal(src, dest) {
+    val  = getFieldValue(src);
+    setFieldValue(dest, val);
+  }
+  copyAuthor() {
+    src  = "Main/Main/Author";
+    dest = "Sample/Sample/Author";
+    copyFieldVal(src, dest);
+  }
+  copyProject() {
+    src  = "Main/Main/Project";
+    dest = "Sample/Sample/Project";
+    copyFieldVal(src, dest);
+  }
+
+/************************** NON-AUTOGEN'D TIMESTAMP ***************************/
+  addOnEvent("Main/Main/Take_New_Sample", "click", "setTimestamp()");
+
+  setTimestamp() {
+    dest = "Sample/Sample/Timestamp";
+    date = new Date();
+    fmt  = "yyyy-MM-dd HH:mm:ss z";
+    val  = new java.text.SimpleDateFormat(fmt).format(date);
+    setFieldValue(dest, val);
+  }
+
   String capturingDevice = null;
 
-  addOnEvent("Sample/Tab/Device_List",  "click", "onClickDeviceList()");
-  addOnEvent("Sample/Tab/Device_List",  "show",  "refreshList()");
-  addOnEvent("Sample/Tab/Refresh_List", "click", "refreshList()");
+  //addOnEvent("Sample/Sample/Device_List",  "click", "onClickDeviceList()");
+  //addOnEvent("Sample/Sample/Device_List",  "show",  "refreshList()");
+  //addOnEvent("Sample/Sample/Refresh_List", "click", "refreshList()");
+  //
+  //onClickDeviceList() {
+  //  String s = getFieldValue("Sample/Sample/Device_List");
+  //  showToast(s);
+  //}
+  //
+  //refreshList() {
+  //  l  = getHardwareDevices();
+  //  pl = listToPairList(l);
+  //  populateDropDown("Sample/Sample/Device_List", pl);
+  //}
+  //
+  //listToPairList(List l) {
+  //  List pl = new ArrayList();
+  //  for (String s : l) {
+  //    pl.add(new NameValuePair(s, s));
+  //  }
+  //  return pl;
+  //}
 
-  onClickDeviceList() {
-    String s = getFieldValue("Sample/Tab/Device_List");
-    showToast(s);
-  }
+/****************************** WEIGHING SCALES *******************************/
+  DO_REFRESH_FIELD = false;
 
-  refreshList() {
-    l  = getHardwareDevices();
-    pl = listToPairList(l);
-    populateDropDown("Sample/Tab/Device_List", pl);
-  }
+  addOnEvent("Sample/Sample/Take_Weight", "click", "onTakeWeightClicked()");
 
-  listToPairList(List l) {
-    List pl = new ArrayList();
-    for (String s : l) {
-      pl.add(new NameValuePair(s, s));
-    }
-    return pl;
-  }
-
-
-  addOnEvent("Sample/Tab", "show", "onBluetoothStartAuto()");
-  
-  messageBuffer = new ArrayList();
-  messageBufferSize = 5;
-  addMessage(message) {
-    messageBuffer.add(message);
-    if (messageBuffer.size() > messageBufferSize) {
-      messageBuffer.remove(0);
-    }
-    value = "";
-    for (i = 0; i < messageBuffer.size(); i++) {
-      if (!value.isEmpty()) {
-        value += "\n";
-      }
-      value += messageBuffer.get(i);
-    }
-    setFieldValue("Sample/Tab/ID", value);
-  }
-  
-  onBluetoothStartAuto() {
+  createBluetoothConnection() {
     createBluetoothConnection("onBluetoothInput()", 1);
   }
-  
+
   onBluetoothInput() {
-    message = getBluetoothMessage();
-    addMessage(message);
+    // Pop the last message from the buffer/stack thing
+    readBluetoothMessage();
+    msg = getBluetoothMessage();
+
+    // Only do more stuff if we have to update the weight field
+    if (!DO_REFRESH_FIELD) {
+      return;
+    }
+    DO_REFRESH_FIELD = false;
+
+    // Update the weight field
+    dest   = "Sample/Sample/Total_Weight";
+    weight = msg;
+    weight = weight.substring(7);
+    weight = weight.replaceAll("\\s+",  " ");
+    weight = weight.replaceAll("\\+",   "");
+    weight = weight.replaceAll("^\\s+", "");
+    setFieldValue(dest, weight);
+  }
+
+  onTakeWeightClicked() {
+    DO_REFRESH_FIELD = true;
+    if (!isBluetoothConnected()) {
+      createBluetoothConnection();
+    }
   }
   ]]>
   </logic>
