@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Fill This In</h:title>
+    <model>
+      <instance>
+        <faims id="Fill_This_In">
+          <style>
+            <orientation>
+              <orientation/>
+            </orientation>
+            <even>
+              <layout_weight/>
+            </even>
+            <large>
+              <layout_weight/>
+            </large>
+          </style>
+          <User>
+            <User>
+              <Select_User/>
+            </User>
+          </User>
+          <Main>
+            <Main>
+              <Project/>
+              <Author/>
+              <Next_Artefact_ID/>
+              <Take_New_Sample/>
+            </Main>
+            <Search>
+              <Colgroup_0>
+                <Col_0>
+                  <Search_Term/>
+                </Col_0>
+                <Col_1>
+                  <Search_Button/>
+                </Col_1>
+              </Colgroup_0>
+              <Entity_List/>
+            </Search>
+          </Main>
+          <Sample>
+            <Sample>
+              <Project/>
+              <Author/>
+              <Timestamp/>
+              <Artefact_ID/>
+              <Artefact_Type/>
+              <Artefact_Description/>
+              <Artefact_Barcode/>
+              <Picture/>
+              <Button_Picture/>
+              <Number_Of_Joints/>
+              <Total_Weight/>
+              <Take_Weight/>
+            </Sample>
+          </Sample>
+          <logic/>
+        </faims>
+      </instance>
+      <bind type="decimal" nodeset="/faims/Main/Main/Next_Artefact_ID"/>
+      <bind type="decimal" nodeset="/faims/Sample/Sample/Artefact_ID"/>
+      <bind type="decimal" nodeset="/faims/Sample/Sample/Number_Of_Joints"/>
+      <bind type="decimal" nodeset="/faims/Sample/Sample/Total_Weight"/>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="style">
+      <label/>
+      <group ref="orientation">
+        <label/>
+        <input ref="orientation">
+          <label>horizontal</label>
+        </input>
+      </group>
+      <group ref="even">
+        <label/>
+        <input ref="layout_weight">
+          <label>1</label>
+        </input>
+      </group>
+      <group ref="large">
+        <label/>
+        <input ref="layout_weight">
+          <label>3</label>
+        </input>
+      </group>
+    </group>
+    <group ref="User">
+      <label>{User}</label>
+      <group ref="User">
+        <label>{User}</label>
+        <select1 appearance="compact" ref="Select_User">
+          <label>{Select_User}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+      </group>
+    </group>
+    <group ref="Main">
+      <label>{Main}</label>
+      <group ref="Main">
+        <label>{Main}</label>
+        <input ref="Project">
+          <label>{Project}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input ref="Author">
+          <label>{Author}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input ref="Next_Artefact_ID" faims_style_class="required">
+          <label>{Next_Artefact_ID}</label>
+        </input>
+        <trigger ref="Take_New_Sample">
+          <label>{Take_New_Sample}</label>
+        </trigger>
+      </group>
+      <group ref="Search" faims_scrollable="false">
+        <label>{search}</label>
+        <group faims_style="orientation" ref="Colgroup_0">
+          <label/>
+          <group faims_style="even" ref="Col_0">
+            <label/>
+            <input ref="Search_Term">
+              <label>{Search_Term}</label>
+            </input>
+          </group>
+          <group faims_style="large" ref="Col_1">
+            <label/>
+            <trigger ref="Search_Button">
+              <label>{Search}</label>
+            </trigger>
+          </group>
+        </group>
+        <select1 appearance="compact" ref="Entity_List">
+          <label>{Entity_List}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>Options not loaded</value>
+          </item>
+        </select1>
+      </group>
+    </group>
+    <group ref="Sample" faims_archent_type="Sample">
+      <label>{Sample}</label>
+      <group ref="Sample">
+        <label>{Sample}</label>
+        <input faims_attribute_type="measure" ref="Project" faims_attribute_name="Project" faims_read_only="true">
+          <label>{Project}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Author" faims_attribute_name="Author">
+          <label>{Author}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Timestamp" faims_attribute_name="Timestamp">
+          <label>{Timestamp}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Artefact_ID" faims_attribute_name="Artefact ID" faims_style_class="required">
+          <label>{Artefact_ID}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <select1 faims_attribute_type="vocab" ref="Artefact_Type" faims_attribute_name="Artefact Type">
+          <label>{Artefact_Type}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select1>
+        <input faims_attribute_type="measure" ref="Artefact_Description" faims_attribute_name="Artefact Description">
+          <label>{Artefact_Description}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Artefact_Barcode" faims_attribute_name="Artefact Barcode">
+          <label>{Artefact_Barcode}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <select type="camera" faims_attribute_type="measure" faims_sync="true" ref="Picture" faims_attribute_name="Picture">
+          <label>{Picture}</label>
+          <item>
+            <label>Options not loaded</label>
+            <value>0</value>
+          </item>
+        </select>
+        <trigger ref="Button_Picture">
+          <label>{Button_Picture}</label>
+        </trigger>
+        <input faims_attribute_type="measure" ref="Number_Of_Joints" faims_attribute_name="Number Of Joints">
+          <label>{Number_Of_Joints}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <input faims_attribute_type="measure" ref="Total_Weight" faims_attribute_name="Total Weight">
+          <label>{Total_Weight}</label>
+          <!--WARNING: No type t was given for this view; assuming it is an input-->
+        </input>
+        <trigger ref="Take_Weight">
+          <label>{Take_Weight}</label>
+        </trigger>
+      </group>
+    </group>
+  </h:body>
+</h:html>
